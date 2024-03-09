@@ -58,11 +58,11 @@ class DataController extends Controller
 
                     foreach ($attendances as $attendance) {
                         $formattedData = [
-                            "userId" => $attendance['uid'],
+                            "userId" => $attendance['id'],
                             "punchTime" => $attendance['timestamp'],
-                            "punchType" => "Finger",
+                            "punchType" => $attendance['type'],
                             "deviceId" => $device->device_id,
-                            "punchMode" => $attendance['type']
+                            "punchMode" => "Finger"
                         ];
 
                         $final_attendances[] = $formattedData;
@@ -75,38 +75,48 @@ class DataController extends Controller
                 continue;
             }
         }
+        //return response()->json($final_attendances);
+        //sent final_attendances to another server
+        $response = Http::post('http://127.0.0.1:8000/api/device-attendance', [
+            'api_key' => 12345678,
+            'attendances' => $final_attendances
 
-        $last_att = Attendance::orderBy('punch_time', 'desc')->first();
-        if (!$last_att) {
-            foreach ($final_attendances as $att) {
-                $attData = new Attendance;
+        ]);
+        return $response->json();
 
-                $attData->api_key = $request->api_key;
-                $attData->user_id = $att['userId'];
-                $attData->punch_time = $att['punchTime'];
-                $attData->device_id = $att['deviceId'];
-                $attData->punch_mode = $att['punchType'];
-                $attData->save();
-                $message = "New  data Upload Successfully";
-            }
-        } else {
-            foreach ($final_attendances as $att) {
-                if (strtotime($last_att->punch_time) < strtotime($att['punchTime'])) {
-                    $attData = new Attendance;
-                    $attData->api_key = $request->api_key;
-                    $attData->user_id = $att['userId'];
-                    $attData->punch_time = $att['punchTime'];
-                    $attData->device_id = $att['deviceId'];
-                    $attData->punch_mode = $att['punchType'];
-                    $attData->save();
-                    $message = "Update new data Successfully";
-                } else {
-                    $message = "Already Updated all Data";
-                }
-            }
-        }
+        // dd($response->json());
+        //Code for Live Server
+        // $last_att = Attendance::orderBy('punch_time', 'desc')->first();
+        // if (!$last_att) {
+        //     foreach ($final_attendances as $att) {
+        //         $attData = new Attendance;
+
+        //         $attData->api_key = $request->api_key;
+        //         $attData->user_id = $att['userId'];
+        //         $attData->punch_time = $att['punchTime'];
+        //         $attData->device_id = $att['deviceId'];
+        //         $attData->punch_mode = $att['punchType'];
+        //         $attData->save();
+        //         $message = "New  data Upload Successfully";
+        //     }
+        // } else {
+        //     foreach ($final_attendances as $att) {
+        //         if (strtotime($last_att->punch_time) < strtotime($att['punchTime'])) {
+        //             $attData = new Attendance;
+        //             $attData->api_key = $request->api_key;
+        //             $attData->user_id = $att['userId'];
+        //             $attData->punch_time = $att['punchTime'];
+        //             $attData->device_id = $att['deviceId'];
+        //             $attData->punch_mode = $att['punchType'];
+        //             $attData->save();
+        //             $message = "Update new data Successfully";
+        //         } else {
+        //             $message = "Already Updated all Data";
+        //         }
+        //     }
+        // }
 
 
-        return response()->json(['success' => $message]);
+        //return response()->json(['success' => $message]);
     }
 }

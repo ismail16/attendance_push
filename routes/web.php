@@ -55,15 +55,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/sync', [DeviceController::class, 'syncFromDevice'])->name('sync');
 
     //User Routes
+    Route::get('users/import-user-index', [UserController::class, 'importUsersIndex'])->name('users.import-user-index');
     Route::delete('/users/{uid}/{device_id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::resource('/users', UserController::class)->except('destroy');
     Route::get('users/single-user/[user]', [UserController::class, 'show_single'])->name('users.show-single');
-
     //Settings
     Route::get('/settings', [DeviceController::class, 'settings_index'])->name('settings.index');
 
     //Data
     Route::resource('attendance', DataController::class);
+    //get server data
+    Route::get('get-data-from-another-server', [DataController::class, 'getDataFromAnotherServer'])->name('get-data-from-another-server');
 
     //Organization
     Route::get('organization', [OrganizationController::class, 'edit'])->name('organization.edit');

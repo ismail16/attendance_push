@@ -9,8 +9,7 @@
             </span>
         </a>
 
-        <a href="javascript:void(0);"
-            class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
     </div>
@@ -28,7 +27,7 @@
 
         <li class="menu-item {{ request()->routeIs('devices.*')? 'active open' : '' }}">
             <a href="javascript:void(0)" class="menu-link menu-toggle">
-            
+
                 <i class='menu-icon tf-icons bx bxs-book-content'></i>
                 <div data-i18n="Devices">Devices</div>
             </a>
@@ -46,7 +45,7 @@
             </ul>
         </li>
 
-        
+
         <!-- Extended components -->
         <li class="menu-item {{ request()->routeIs('users.*')? 'active open' : '' }}">
             <a href="javascript:void(0)" class="menu-link menu-toggle">
@@ -64,27 +63,31 @@
                         <div data-i18n="Add user to device">Add user to device</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->routeIs('users.import-user-index')? 'active' : '' }}">
+                    <a href="{{ route('users.import-user-index') }}" class="menu-link">
+                        <div data-i18n="Add users From Server">Add users From Server</div>
+                    </a>
+                </li>
             </ul>
         </li>
 
 
         <li class="menu-item {{ request()->routeIs('device.attendance')? 'active' : '' }}">
             <a href="{{ route('device.attendance') }}" class="menu-link">
-                <i class='menu-icon tf-icons bx bx-notepad' ></i>
+                <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="Attendance Log">Attendance Log</div>
             </a>
         </li>
-
         <li class="menu-item {{ request()->routeIs('attendance.index')? 'active' : '' }}">
             <a href="{{ route('attendance.index') }}" class="menu-link">
-                <i class='menu-icon tf-icons bx bx-notepad' ></i>
+                <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="All Attendance">Today's Attendance</div>
             </a>
         </li>
 
         <li class="menu-item {{ request()->routeIs('export.export_attendance')? 'active' : '' }}">
             <a href="{{ route('export.export_attendance') }}" class="menu-link">
-                <i class='menu-icon tf-icons bx bx-notepad' ></i>
+                <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="Export Attendance">Exports</div>
             </a>
         </li>

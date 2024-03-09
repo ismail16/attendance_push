@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/device-attendance', [DataController::class, 'device_attendance_push'])->name('device_attendance_push');
-// api/device-attendance
-//
+Route::post('/import-users-from-server', [UserController::class, 'importUsersFromServer'])->name('import-users-from-server');
