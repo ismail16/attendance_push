@@ -56,6 +56,8 @@ class DataController extends Controller
                     $zk->disableDevice();
                     $attendances = $zk->getAttendance();
 
+                    // return $attendances;
+
                     foreach ($attendances as $attendance) {
                         $formattedData = [
                             "userId" => $attendance['id'],
@@ -75,7 +77,7 @@ class DataController extends Controller
                 continue;
             }
         }
-        //return response()->json($final_attendances);
+        // return response()->json($final_attendances);
         //sent final_attendances to another server
         $response = Http::post('http://127.0.0.1:8000/api/device-attendance', [
             'api_key' => 12345678,

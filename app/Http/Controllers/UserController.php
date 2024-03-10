@@ -211,22 +211,29 @@ class UserController extends Controller
         // dd($request->all());
         $response = Http::post('http://127.0.0.1:8000/api/get-users', [
             'api_key' => 123,
-            'users_type' => $request->users_type
+            'users_type' => $request->users_type,
+            'device_id' => $request->device_id
         ]);
+        // return $response;
         //dd responses users
 
         if (isset($response->json()['users'])) {
             // dd($response->json()['users']);
             $users = $response->json()['users'];
+            // return $users;
+
             foreach ($users as $user) {
-                //dd($user);
+
                 $device = Device::findOrFail($request->device_id);
                 $zk = new ZKTeco($device->device_ip, 4370);
+
                 if ($zk->connect()) {
-                    $zk->disableDevice();
+                    // $zk->disableDevice();
                     //uid, userid, name, role, password, cardno
                     $user['cardno'] = $user['cardno'] ?? 0;
-                    $zk->setUser($user['id'], $user['u_id'], $user['name'], $user['role_id'], $user['phone'], $user['cardno']);
+                    $user_name = $user['u_id'].'-'. $user['name'];
+
+                    $zk->setUser($user['id'], $user['id'], $user_name, $user['role_id'], $user['phone'], $user['cardno']);
                 } else {
                     return redirect()->back()->with('error', 'Device' . $device->name . ' not connected. Set the correct IP.');
                 }
@@ -234,6 +241,6 @@ class UserController extends Controller
         } else {
             return redirect()->back()->with('error', 'No users found.');
         }
-        return back()->with('success', 'Users imported successfully.');
+        return redirect()->route('users.index')->with('success', 'Users imported successfully.');
     }
 }

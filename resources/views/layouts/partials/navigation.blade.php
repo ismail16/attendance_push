@@ -3,8 +3,7 @@
         <a href="{{ route('dashboard') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <div class="d-flex align-items-end">
-                    <img src="{{ asset('images/logo.png') }}" alt="" width="150">
-                    <span class="fw-bold" style="padding-bottom: 10px; color:rgb(13, 27, 96)">HR</span>
+                    <span class="fw-bold" style="padding-bottom: 10px; color:rgb(13, 27, 96)">PICode Push</span>
                 </div>
             </span>
         </a>
@@ -25,54 +24,45 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('devices.*')? 'active open' : '' }}">
-            <a href="javascript:void(0)" class="menu-link menu-toggle">
 
-                <i class='menu-icon tf-icons bx bxs-book-content'></i>
-                <div data-i18n="Devices">Devices</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item {{ request()->routeIs('devices.index')? 'active' : '' }}">
+         <li class="menu-item {{ request()->routeIs('devices.index')? 'active' : '' }}">
+            
                     <a href="{{ route('devices.index') }}" class="menu-link">
-                        <div data-i18n="Device List">Device List</div>
+                        <div data-i18n="Device List"><i class='menu-icon tf-icons bx bxs-book-content'></i> Device List</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->routeIs('devices.create')? 'active' : '' }}">
-                    <a href="{{ route('devices.create') }}" class="menu-link">
-                        <div data-i18n="Add Device">Add Device</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
 
         <!-- Extended components -->
-        <li class="menu-item {{ request()->routeIs('users.*')? 'active open' : '' }}">
+      <!--   <li class="menu-item {{ request()->routeIs('users.*')? 'active open' : '' }}">
             <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class=' menu-icon tf-icons bx bx-user'></i>
                 <div data-i18n="Users">Users</div>
             </a>
             <ul class="menu-sub">
+                
+                
+            </ul>
+        </li> -->
+    <hr>
+        <li class="menu-item {{ request()->routeIs('users.import-user-index')? 'active' : '' }}">
+                    <a href="{{ route('users.import-user-index') }}" class="menu-link">
+                        <div data-i18n="Add users From Server"><i class=' menu-icon tf-icons bx bx-user'></i> Add users From Server</div>
+                    </a>
+                </li>
                 <li class="menu-item {{ request()->routeIs('users.index')? 'active' : '' }}">
                     <a href="{{ route('users.index') }}" class="menu-link">
-                        <div data-i18n="User List">User List</div>
+                        <div data-i18n="User List"> <i class=' menu-icon tf-icons bx bx-user'></i> User List</div>
                     </a>
                 </li>
                 <li class="menu-item {{ request()->routeIs('users.create')? 'active' : '' }}">
                     <a href="{{ route('users.create') }}" class="menu-link">
-                        <div data-i18n="Add user to device">Add user to device</div>
+                        <div data-i18n="Add user to device"> <i class=' menu-icon tf-icons bx bx-user-plus'></i>Add user to device</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->routeIs('users.import-user-index')? 'active' : '' }}">
-                    <a href="{{ route('users.import-user-index') }}" class="menu-link">
-                        <div data-i18n="Add users From Server">Add users From Server</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
-
-        <li class="menu-item {{ request()->routeIs('device.attendance')? 'active' : '' }}">
+<hr>
+       <!--  <li class="menu-item {{ request()->routeIs('device.attendance')? 'active' : '' }}">
             <a href="{{ route('device.attendance') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="Attendance Log">Attendance Log</div>
@@ -83,21 +73,21 @@
                 <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="All Attendance">Today's Attendance</div>
             </a>
-        </li>
+        </li> -->
 
         <li class="menu-item {{ request()->routeIs('export.export_attendance')? 'active' : '' }}">
             <a href="{{ route('export.export_attendance') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-notepad'></i>
-                <div data-i18n="Export Attendance">Exports</div>
+                <div data-i18n="Export Attendance">Attandance Exports</div>
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('organization.edit')? 'active' : '' }}">
+        <!-- <li class="menu-item {{ request()->routeIs('organization.edit')? 'active' : '' }}">
             <a href="{{ route('organization.edit') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-building-house'></i>
                 <div data-i18n="Organization">Organization</div>
             </a>
-        </li>
+        </li> -->
 
     </ul>
 </aside>

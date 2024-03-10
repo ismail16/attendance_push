@@ -10,12 +10,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 
-    <title>Status HR - @yield('title')</title>
+    <title>PICodePush - @yield('title')</title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -86,7 +85,7 @@
                                 <script>
                                     document.write(new Date().getFullYear());
                                 </script>
-                                , Developed By Status-sa ( Product By Status)
+                                , Developed By PICodeIT
                             </div>
 
                         </div>

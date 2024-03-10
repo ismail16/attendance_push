@@ -7,7 +7,7 @@
                 <div class=" row">
                     <div class="col-sm-10 d-flex justify-content-between align-items-center">
                         <div class="card-body">
-                            <h5 class="card-title text-primary">Welcome to Status HR!</h5>
+                            <h5 class="card-title text-primary">Welcome to Status PICode Push</h5>
                             <p class="mb-0">You are currently using as <span class="fw-bold">{{ $org_name }}</span></p>
                         </div>
 
@@ -108,7 +108,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h3 class="card-title text-center ">Customer Support</h3>
-                            <h6 class="text-center"><i class='bx bxs-phone'></i> +9660559087794</h6>
+                            <h6 class="text-center"><i class='bx bxs-phone'></i> +8801686254438</h6>
                         </div>
                         <div class="card bg-dark border-0 text-white" style="border-radius: 0px">
                             <img class="card-img" style="border-radius: 0px" src="{{ asset('images/support.jpg') }}"
@@ -118,7 +118,7 @@
 
                         <div class="card-footer support-info">
                             <h4 class="card-title text-center">Support Time</h4>
-                            <p class="text-center"> 08:00 AM - 7:00 PM</p>
+                            <p class="text-center"> 09:00 AM - 6:00 PM</p>
                             <p class="text-center">(Without Friday, Saturday & Govt. Holidays)</p>
                         </div>
 

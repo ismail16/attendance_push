@@ -11,10 +11,6 @@
             <a class="btn btn-primary btn-sm" href="{{ route('users.create') }}">Add User</a>
             <a class="btn btn-success btn-sm" href="{{ route('users.export') }}">Export Excel</a>
           </div>
-
-          
-
-
         <div class="card-body">
             @foreach ($errors as $error)
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -28,12 +24,11 @@
                     <thead>
                         <tr>
                             <th>SL</th>
+                            <th>Id</th>
+                            <th>Card No</th>
                             <th>Device Id</th>
-                            <th>User Id</th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Password</th>
-                            <th>Card No</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -42,12 +37,11 @@
                         @foreach ($all_users as $user)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $user['uid'] }}</td>
+                                <td>{{ $user['cardno'] }}</td>
                                 <td>{{ $user['device_id'] }}</td>
-                                <td>{{ $user['userid'] }}</td>
                                 <td>{{ $user['name'] }}</td>
                                 <td>{{ $user['role'] }}</td>
-                                <td>{{ $user['password'] }}</td>
-                                <td>{{ $user['cardno'] }}</td>
                                 <td>
                                     <a class="btn btn-primary btn-sm" href="{{ route('users.show-single', $user) }}">
                                         View</a>
