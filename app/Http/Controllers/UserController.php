@@ -209,35 +209,39 @@ class UserController extends Controller
     {
 
         // dd($request->all());
-        $response = Http::post('http://127.0.0.1:8000/api/get-users', [
+         $remoteServerUrl = env('REMOTE_SERVER_URL');
+
+        $response = Http::post($remoteServerUrl.'/api/get-users', [
             'api_key' => 123,
             'users_type' => $request->users_type,
             'device_id' => $request->device_id
         ]);
-        // return $response;
+
         //dd responses users
 
         if (isset($response->json()['users'])) {
             // dd($response->json()['users']);
+
             $users = $response->json()['users'];
-            // return $users;
+            $device = Device::findOrFail($request->device_id);
+            $zk = new ZKTeco($device->device_ip, 4370);
+            $zk->connect();
 
-            foreach ($users as $user) {
-
-                $device = Device::findOrFail($request->device_id);
-                $zk = new ZKTeco($device->device_ip, 4370);
-
-                if ($zk->connect()) {
-                    // $zk->disableDevice();
+            if ($zk->connect()) {
+                foreach ($users as $user) {
                     //uid, userid, name, role, password, cardno
-                    $user['cardno'] = $user['cardno'] ?? 0;
-                    $user_name = $user['u_id'].'-'. $user['name'];
+                    $user_id = $user['id'];
+                    $user_name = substr($user['u_id'], 0, 2).'-'.$user['name'];
+                    $role_id = $user['role_id'];
+                    $user_phone = $user['phone'];
+                    $user_cardno = $user['cardno'] ?? 0;
 
-                    $zk->setUser($user['id'], $user['id'], $user_name, $user['role_id'], $user['phone'], $user['cardno']);
-                } else {
-                    return redirect()->back()->with('error', 'Device' . $device->name . ' not connected. Set the correct IP.');
+                    $zk->setUser($user_id, $user_id, $user_name, $role_id, $user_phone, $user_cardno);
                 }
+            }else {
+                return redirect()->back()->with('error', 'Device' . $device->name . ' not connected. Set the correct IP.');
             }
+
         } else {
             return redirect()->back()->with('error', 'No users found.');
         }

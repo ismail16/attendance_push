@@ -23,7 +23,7 @@ class DataController extends Controller
 
     public function device_attendance_push(Request $request)
     {
-        // $remoteServerUrl = env('REMOTE_SERVER_URL');
+        $remoteServerUrl = env('REMOTE_SERVER_URL');
 
         // // Validate if the URL is properly formatted
         // if (filter_var($remoteServerUrl, FILTER_VALIDATE_URL) === false) {
@@ -79,7 +79,7 @@ class DataController extends Controller
         }
         // return response()->json($final_attendances);
         //sent final_attendances to another server
-        $response = Http::post('http://127.0.0.1:8000/api/device-attendance', [
+        $response = Http::post($remoteServerUrl.'/api/device-attendance', [
             'api_key' => 12345678,
             'attendances' => $final_attendances
 
