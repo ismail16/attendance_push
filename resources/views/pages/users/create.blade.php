@@ -13,26 +13,23 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="user_id">Device</label>
                     <div class="col-sm-10">
-                        <select name="device_id" class="form-control" >
+                        <select name="device_id" class="form-control">
                             <option value="">Please Select</option>
                             @foreach ($devices as $device)
-                                <option value="{{ $device->id }}"> {{ $device->device_id. ' ' .$device->name }}</option>
+                                <option value="{{ $device->id }}"> {{ $device->device_id . ' ' . $device->name }}</option>
                             @endforeach
                         </select>
-
                         @error('device_id')
                             <div class="form-text text-danger"> {{ $message }} </div>
                         @enderror
-
                     </div>
-
-
                 </div>
-      
+
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="name">Name</label>
                     <div class="col-sm-10">
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name" value="{{ old('name') }}">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name"
+                            value="{{ old('name') }}">
                         @error('username')
                             <div class="form-text text-danger"> {{ $message }} </div>
                         @enderror
@@ -42,7 +39,8 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="role">Role</label>
                     <div class="col-sm-10">
-                        <input type="number" name="role" class="form-control" id="role" placeholder="Enter Role ID" value="{{ old('role') }}">
+                        <input type="number" name="role" class="form-control" id="role" placeholder="Enter Role ID"
+                            value="{{ old('role') }}">
                     </div>
                 </div>
 
@@ -56,7 +54,8 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="card_no">Card No</label>
                     <div class="col-sm-10">
-                        <input type="text" name="cardno" class="form-control" id="card_no" placeholder="98734234" value="{{ old('cardno') }}">
+                        <input type="text" name="cardno" class="form-control" id="card_no" placeholder="98734234"
+                            value="{{ old('cardno') }}">
                     </div>
                 </div>
                 <div class="row justify-content-end">

@@ -221,6 +221,8 @@ class DeviceController extends Controller
             }
         }
 
+        return $final_attendances;
+
         return Excel::download(new AttendanceExport($final_attendances), 'attendances.xlsx');
     }
 
@@ -229,7 +231,7 @@ class DeviceController extends Controller
 
         $devices = Device::all();
         $org_api_key = Organization::first()->api_key;
-        $final_attendances = array();
+        $finalAttendances = array();
         $errors = [];
 
         foreach ($devices as $device) {
@@ -240,14 +242,15 @@ class DeviceController extends Controller
                     $zk->disableDevice();
                     $attendances = $zk->getAttendance();
 
-
-                    foreach ($attendances as &$item) {
-                        $item['device_id'] = $device->device_id;
-                        $item['api_key'] = $org_api_key;
-                    }
-
                     foreach ($attendances as $att) {
-                        $final_attendances[] = $att;
+                        $finalAtt['uid'] = $att['uid'];
+                        $finalAtt['id'] = $att['id'];
+                        $finalAtt['state'] = $att['state'];
+                        $finalAtt['timestamp'] = $att['timestamp'];
+                        $finalAtt['type'] = $att['type'];
+                        $finalAtt['device_id'] = $device->device_id;
+                        $finalAtt['api_key'] = $org_api_key;
+                        $finalAttendances[] = $finalAtt;
                     }
                 } else {
                     $errors[] = ['msg' => 'Device' . $device->name . ' not connected. Set the correct IP.'];
@@ -258,7 +261,9 @@ class DeviceController extends Controller
             }
         }
 
-        return view('pages.attendance.export', compact('final_attendances', 'errors'));
+        // return $finalAttendances;
+
+        return view('pages.attendance.export', compact('finalAttendances', 'errors'));
     }
 
 

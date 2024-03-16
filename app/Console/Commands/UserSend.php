@@ -1,27 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Console\Commands;
 
 use App\Models\Attendance;
 use App\Models\Device;
 use App\Models\Organization;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Rats\Zkteco\Lib\ZKTeco;
 
-class DataController extends Controller
+class UserSend extends Command
 {
     /**
-     * Display a listing of the resource.
+     * The name and signature of the console command.
+     *
+     * @var string
      */
-    public function index()
-    {
-        $attendance = Attendance::get();
-        return view('pages.data.index', compact('attendance'));
-    }
+    protected $signature = 'attendance:send';
 
-    public function device_attendance_push(Request $request)
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'This command will send the data to server';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): void
     {
         $remoteServerUrl = env('REMOTE_SERVER_URL');
 
@@ -84,41 +91,41 @@ class DataController extends Controller
             'attendances' => $final_attendances
 
         ]);
-        return $response->json();
 
-        // dd($response->json());
-        //Code for Live Server
-        // $last_att = Attendance::orderBy('punch_time', 'desc')->first();
-        // if (!$last_att) {
-        //     foreach ($final_attendances as $att) {
-        //         $attData = new Attendance;
+        if ($response->ok()) {
+            $this->info('Attendance Storred Successfully!');
+        } else {
+            $this->info('Something went wrong!');
+        }
 
-        //         $attData->api_key = $request->api_key;
-        //         $attData->user_id = $att['userId'];
-        //         $attData->punch_time = $att['punchTime'];
-        //         $attData->device_id = $att['deviceId'];
-        //         $attData->punch_mode = $att['punchType'];
-        //         $attData->save();
-        //         $message = "New  data Upload Successfully";
-        //     }
-        // } else {
-        //     foreach ($final_attendances as $att) {
-        //         if (strtotime($last_att->punch_time) < strtotime($att['punchTime'])) {
-        //             $attData = new Attendance;
-        //             $attData->api_key = $request->api_key;
-        //             $attData->user_id = $att['userId'];
-        //             $attData->punch_time = $att['punchTime'];
-        //             $attData->device_id = $att['deviceId'];
-        //             $attData->punch_mode = $att['punchType'];
-        //             $attData->save();
-        //             $message = "Update new data Successfully";
-        //         } else {
-        //             $message = "Already Updated all Data";
-        //         }
-        //     }
+        // $data_array = Attendance::where('status', 0)->get();
+
+        // $new_array = [];
+
+        // foreach ($data_array as $data)
+        // {
+        //     $this_data = [
+        //         "userId" => $data->user_id,
+        //         "punchTime" => $data->punch_time,
+        //         "punchType" => "Finger",
+        //         "deviceId" => $data->device_id,
+        //         "punchMode" => $data->punch_mode
+        //     ];
+
+        //     array_push($new_array, $this_data);
         // }
 
+        // $response = Http::acceptJson()->post(env('REMOTE_SERVER_URL').'/api/user-device-data',$new_array);
 
-        //return response()->json(['success' => $message]);
+        // if($response->ok()){
+
+        //     foreach($data_array as $data){
+        //         Attendance::find($data->id)->update(['status' => 1]);
+        //     }
+        //     $this->info('Attendance Storred Successfully!');
+        // }
+        // else{
+        //     $this->info('Something went wrong!');
+        // }
     }
 }

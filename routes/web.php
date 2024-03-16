@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/device/set-ip', [DeviceController::class, 'set_device_ip'])->name('device.set_ip');
     Route::get('device/{device_id}/test-sound', [DeviceController::class, 'test_sound'])->name('device.test_sound');
     Route::resource('devices', DeviceController::class);
+
     Route::get('/export-attendances', [DeviceController::class, 'export'])->name('attendances.export');
     Route::get('/export-users', [UserController::class, 'export'])->name('users.export');
 
