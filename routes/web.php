@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\FingerController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -71,6 +72,12 @@ Route::middleware('auth')->group(function () {
     //Organization
     Route::get('organization', [OrganizationController::class, 'edit'])->name('organization.edit');
     Route::post('organization/update', [OrganizationController::class, 'update'])->name('organization.update');
+
+
+    //fingerprint
+    Route::get('fingerprint', [FingerController::class, 'index'])->name('fingerprint.index');
+    Route::post('export-fingerprint-to-server', [FingerController::class, 'exportFNGToServer'])->name('fingerprint.store');
+    Route::post('import-fingerprint-to-device', [FingerController::class, 'importFNGToDevice'])->name('fingerprint.import-to-device');
 });
 
 require __DIR__ . '/auth.php';

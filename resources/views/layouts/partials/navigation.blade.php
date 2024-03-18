@@ -43,20 +43,20 @@
             </ul>
         </li> -->
         {{-- <li class="menu-item {{ request()->routeIs('users.import-user-index')? 'active' : '' }}">
-                    <a href="{{ route('users.import-user-index') }}" class="menu-link">
-                        <div data-i18n="Add users From Server"><i class=' menu-icon tf-icons bx bx-user'></i> Add users From Server</div>
-                    </a>
-                </li> --}}
+        <a href="{{ route('users.import-user-index') }}" class="menu-link">
+            <div data-i18n="Add users From Server"><i class=' menu-icon tf-icons bx bx-user'></i> Add users From Server</div>
+        </a>
+        </li> --}}
         <li class="menu-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
             <a href="{{ route('users.index') }}" class="menu-link">
                 <div data-i18n="User List"> <i class=' menu-icon tf-icons bx bx-user'></i> User List</div>
             </a>
         </li>
         {{-- <li class="menu-item {{ request()->routeIs('users.create') ? 'active' : '' }}">
-            <a href="{{ route('users.create') }}" class="menu-link">
-                <div data-i18n="Add user to device"> <i class=' menu-icon tf-icons bx bx-user-plus'></i>Add user to
-                    device</div>
-            </a>
+        <a href="{{ route('users.create') }}" class="menu-link">
+            <div data-i18n="Add user to device"> <i class=' menu-icon tf-icons bx bx-user-plus'></i>Add user to
+                device</div>
+        </a>
         </li> --}}
 
         <!--  <li class="menu-item {{ request()->routeIs('device.attendance') ? 'active' : '' }}">
@@ -71,9 +71,14 @@
                 <div data-i18n="All Attendance">Today's Attendance</div>
             </a>
         </li> -->
+        <!-- <li class="menu-item {{ request()->routeIs('fingerprint.index') ? 'active' : '' }}">
+            <a href="{{ route('fingerprint.index') }}" class="menu-link">
+                <div data-i18n="Finger Print"> <i class=' menu-icon tf-icons bx bx-fingerprint'></i> Finger Print</div>
+            </a>
+        </li> -->
 
-        <li
-            class="menu-item {{ request()->routeIs('export.export_attendance') ? 'active' : '' }} {{ request()->routeIs('search.attendance') ? 'active' : '' }}">
+
+        <li class="menu-item {{ request()->routeIs('export.export_attendance') ? 'active' : '' }} {{ request()->routeIs('search.attendance') ? 'active' : '' }}">
             <a href="{{ route('export.export_attendance') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-notepad'></i>
                 <div data-i18n="Export Attendance">Attandance Exports</div>
