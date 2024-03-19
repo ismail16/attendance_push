@@ -250,4 +250,28 @@ class UserController extends Controller
         }
         return redirect()->route('users.index')->with('success', 'Users imported successfully.');
     }
+
+    public function allDelete()
+    {
+
+        //return response()->json('All users deleted successfully.');
+        $devices = Device::all();
+        foreach ($devices as $device) {
+            if ($device->device_ip) {
+                $zk = new ZKTeco($device->device_ip, 4370);
+                if ($zk->connect()) {
+                    $zk->disableDevice();
+                    $users = $zk->getUser();
+                    foreach ($users as $user) {
+                        if ($user['role'] == 0) {
+                            $zk->removeUser($user['uid']);
+                        }
+                    }
+                } else {
+                    return response()->json(['message' => 'Device ' . $device->name . ' not connected. Set the correct IP.'], 400);
+                }
+            }
+            return response()->json(['message' => 'All users deleted successfully.'], 200);
+        }
+    }
 }

@@ -58,9 +58,11 @@ Route::middleware('auth')->group(function () {
 
     //User Routes
     Route::get('users/import-user-index', [UserController::class, 'importUsersIndex'])->name('users.import-user-index');
+    Route::delete('user/all-delete', [UserController::class, 'allDelete'])->name('user.all-delete');
     Route::delete('/users/{uid}/{device_id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::resource('/users', UserController::class)->except('destroy');
     Route::get('users/single-user/[user]', [UserController::class, 'show_single'])->name('users.show-single');
+
     //Settings
     Route::get('/settings', [DeviceController::class, 'settings_index'])->name('settings.index');
 
