@@ -37,7 +37,6 @@ class AttendanceSend extends Command
         //     $this->error('Invalid REMOTE_SERVER_URL format.');
         //     return;
         // }
-
         // Extract the host from the URL
         // $urlParts = parse_url($remoteServerUrl);
         // $host = $urlParts['host'];
@@ -58,11 +57,9 @@ class AttendanceSend extends Command
         foreach ($devices as $device) {
             if ($device->device_ip) {
                 $zk = new ZKTeco($device->device_ip, 4370);
-
                 if ($zk->connect()) {
                     $zk->disableDevice();
                     $attendances = $zk->getAttendance();
-
                     // return $attendances;
 
                     foreach ($attendances as $attendance) {
@@ -89,7 +86,6 @@ class AttendanceSend extends Command
         $response = Http::post($remoteServerUrl . '/api/device-attendance', [
             'api_key' => 12345678,
             'attendances' => $final_attendances
-
         ]);
 
         if ($response->ok()) {
@@ -99,9 +95,7 @@ class AttendanceSend extends Command
         }
 
         // $data_array = Attendance::where('status', 0)->get();
-
         // $new_array = [];
-
         // foreach ($data_array as $data)
         // {
         //     $this_data = [
@@ -111,12 +105,9 @@ class AttendanceSend extends Command
         //         "deviceId" => $data->device_id,
         //         "punchMode" => $data->punch_mode
         //     ];
-
         //     array_push($new_array, $this_data);
         // }
-
         // $response = Http::acceptJson()->post(env('REMOTE_SERVER_URL').'/api/user-device-data',$new_array);
-
         // if($response->ok()){
 
         //     foreach($data_array as $data){
