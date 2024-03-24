@@ -17,18 +17,19 @@ class UserController extends Controller
      */
     public function index()
     {
+        
         $devices = Device::orderBy('device_id')->get();
         $all_users = array();
         $errors = [];
 
         foreach ($devices as $device) {
             if ($device->device_ip) {
-                $zk = new ZKTeco($device->device_ip, 4370);
 
+
+                $zk = new ZKTeco($device->device_ip, 4370);
                 if ($zk->connect()) {
                     $zk->disableDevice();
                     $users = $zk->getUser();
-
                     if (count($users) > 0) {
                         $last_user = end($users)['userid'];
                         foreach ($users as &$user) {
