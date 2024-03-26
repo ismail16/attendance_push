@@ -33,27 +33,31 @@ class UserSendToDevice extends Command
     public function handle(): void
     {
         $remoteServerUrl = env('REMOTE_SERVER_URL');
-        
         // demo responce of "Device api call"
-        $server_devices = array( 
-            array (
-               "device_id" => 1,
-               "device_ip" => "192.168.0.9",
-               "users_type" => ["SM"], 
-            ),
-            array (
-                "device_id" => 2,
-                "device_ip" => "192.168.0.10",
-                "users_type" => ["SM", "EM_TMF"], 
-            )
-        ); //API responce of devices
+        // $server_devices = array( 
+        //     array (
+        //        "device_id" => 1,
+        //        "device_ip" => "192.168.0.9",
+        //        "users_type" => ["SM"], 
+        //     ),
+        //     array (
+        //         "device_id" => 2,
+        //         "device_ip" => "192.168.0.10",
+        //         "users_type" => ["SM", "EM_TMF"], 
+        //     )
+        // ); 
+        //API responce of devices
 
-        foreach($server_devices as $server_device){
+        $server_devices = Http::post($remoteServerUrl . '/api/get-attendance-device', [
+            'api_key' => 12345678
+        ]);
+
+        foreach(json_decode($server_devices) as $server_device){
 
             $server_users = Http::post($remoteServerUrl . '/api/get-users', [
                 'api_key' => 123,
-                'users_type' => $server_device['device_id'], 
-                'device_id' => $server_device['users_type'], // 1, 2
+                'users_type' => $server_device->users_type, 
+                'device_id' => $server_device->id, // 1, 2
             ]);
 
             if ($server_users) {
@@ -61,7 +65,7 @@ class UserSendToDevice extends Command
     
                 $users = $server_users;
                 // $device = Device::where('device_ip', $server_device['device_ip'])->first();  used it earlier 
-                $zk = new ZKTeco($server_device['device_ip'], 4370);
+                $zk = new ZKTeco($server_device->ip, 4370);
                 $zk->connect();
     
                 if ($zk->connect()) {
@@ -76,7 +80,7 @@ class UserSendToDevice extends Command
                         $zk->setUser($user_id, $user_id, $user_name, $role_id, $user_phone, $user_cardno);
                     }
                 } else {
-                    $this->info('Device' . $server_device['device_ip'] . ' not connected. Set the correct IP.');
+                    $this->info('Device' . $server_device->ip . ' not connected. Set the correct IP.');
                 }
             } else {
                 $this->info('No users found.');
