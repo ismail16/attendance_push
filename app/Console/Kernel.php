@@ -4,7 +4,9 @@ namespace App\Console;
 
 // use App\Console\Commands\AttendanceStore;
 use App\Console\Commands\AttendanceSend;
+use App\Console\Commands\FetchUserFromLive;
 use App\Console\Commands\UserSendToDevice;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // AttendanceStore::class,
         AttendanceSend::class,
-        UserSendToDevice::class
+        UserSendToDevice::class,
+        FetchUserFromLive::class
     ];
 
     protected function schedule(Schedule $schedule): void
@@ -21,6 +24,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('attendance:store')->everyMinute();
         $schedule->command('attendance:send')->everyMinute();
         $schedule->command('user:send')->everyMinute();
+        $schedule->command('user:fetch')->weekly()->weeklyOn(5, '0:00'); 
 
     }
 
