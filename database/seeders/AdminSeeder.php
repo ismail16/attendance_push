@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'mobile' => '01900000000',
             'device_name' => 'ZKTeco iclock-9000',
             'device_sl' => 'JR09234234',
-            'password' => bcrypt('12345678'),
+            'password' => bcrypt('11111111'),
         ]);
     }
 }

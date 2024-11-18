@@ -35,6 +35,7 @@ class UserController extends Controller
         foreach ($devices as $device) {
             if ($device->device_ip) {
 
+
                 $zk = new ZKTeco($device->device_ip, 4370);
                 if ($zk->connect()) {
                     $zk->disableDevice();
@@ -243,7 +244,8 @@ class UserController extends Controller
                 foreach ($users as $user) {
                     //uid, userid, name, role, password, cardno
                     $user_id = $user['id'];
-                    $user_name = substr($user['u_id'], 0, 2) . '-' . $user['name'];
+                    // $user_name = substr($user['u_id'], 0, 2) . '-' . $user['name'];
+                    $user_name = substr($user['u_id'], 0, 2) . '-' . substr($user['name'], 0, 18);
                     $role_id = 48;
                     $user_phone = $user['phone'];
                     $user_cardno = $user['cardno'] ?? 0;
@@ -312,7 +314,7 @@ class UserController extends Controller
                     foreach ($users as $user) {
                         $prefix = substr($user['u_id'], 0, 2);
                         $user_id = $user['id'];
-                        $user_name = $prefix . '-' . $user['name'];
+                        $user_name = $prefix . '-' . substr($user['name'], 0, 18);
                         $role_id = 48;
                         $user_phone = $user['phone'];
                         $user_cardno = $user['cardno'] ?? 0;
