@@ -22,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/device-attendance', [DataController::class, 'device_attendance_push'])->name('device_attendance_push');
 Route::post('/import-users-from-server', [UserController::class, 'importUsersFromServer'])->name('import-users-from-server');
+Route::get('/import-users-and-device-from-server', [UserController::class, 'importUsersWithDeviceFromServer'])->name('import-users-device-from-server');

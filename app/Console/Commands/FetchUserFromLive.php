@@ -28,37 +28,59 @@ class FetchUserFromLive extends Command
      */
     public function handle(): void
     {
-        // dd($request->users_type);
         $remoteServerUrl = env('REMOTE_SERVER_URL');
 
         $response = Http::post($remoteServerUrl . '/api/get-device-users', [
-            'api_key' => 123,
+            'api_key' => 123
         ]);
-
+        //return $response;
         //dd responses users
 
         if (isset($response->json()['users'])) {
-            // dd($response->json()['users']);
+            //return ($response->json()['devices']);
 
-            //  $users = $response->json()['users'];
-            //   $device = Device::findOrFail($request->device_id);
-            //  $zk = new ZKTeco($device->device_ip, 4370);
-            // $zk->connect();
+            $users = $response->json()['users'];
+            $devices = $response->json()['devices'];
 
-            // if ($zk->connect()) {
-            //     foreach ($users as $user) {
-            //         //uid, userid, name, role, password, cardno
-            //         $user_id = $user['id'];
-            //         $user_name = substr($user['u_id'], 0, 2) . '-' . $user['name'];
-            //         $role_id = 48;
-            //         $user_phone = $user['phone'];
-            //         $user_cardno = $user['cardno'] ?? 0;
+            foreach ($devices as $device) {
+                // return ($device);
+                $zk = new ZKTeco($device['ip'], 4370);
+                // $device_info = Device::where('device_ip', $device['ip'])->first();
+                // return $device_info;
+                $zk->connect();
+                //  return $zk->serialNumber();
+                if ($zk->connect()) {
+                    foreach ($users as $user) {
+                        $prefix = substr($user['u_id'], 0, 2);
+                        $user_id = $user['id'];
+                        $user_name = $prefix . '-' . $user['name'];
+                        $role_id = 48;
+                        $user_phone = $user['phone'];
+                        $user_cardno = $user['cardno'] ?? 0;
 
-            //         $zk->setUser($user_id, $user_id, $user_name, $role_id, $user_phone, $user_cardno);
-            //     }
-            // } else {
-            // }
+                        // Define acceptable prefixes for each user type
+                        $userTypes = [
+                            'SM' => ['SM'],
+                            'SF' => ['SF'],
+                            'SMF' => ['SM', 'SF'],
+                            'EM_TMF' => ['EM', 'TM', 'TF'],
+                            'EM_TMF_SM' => ['EM', 'TM', 'TF', 'SM'],
+                            'EM_TMF_SF' => ['EM', 'TM', 'TF', 'SF'],
+                            'EM_TMF_SMF' => ['EM', 'TM', 'TF', 'SM', 'SF']
+                        ];
+
+                        // Check if the current user's prefix is allowed for the device's user type
+                        if (isset($userTypes[$device['users_type']]) && in_array($prefix, $userTypes[$device['users_type']])) {
+                            $zk->setUser($user_id, $user_id, $user_name, $role_id, $user_phone, $user_cardno);
+                        }
+                    }
+                } else {
+                    // return redirect()->back()->with('error', 'Device' . $device->name . ' not connected. Set the correct IP.');
+                }
+            }
         } else {
+            // return redirect()->back()->with('error', 'No users found.');
         }
+        // return redirect()->route('users.index')->with('success', 'Users imported successfully.');
     }
 }
