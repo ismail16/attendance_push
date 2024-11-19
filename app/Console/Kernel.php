@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('attendance:store')->everyMinute();
         $schedule->command('attendance:send')->everyMinute();
         // $schedule->command('user:send')->everyMinute();
-        // $schedule->command('user:fetch')->everyMinute();
-        $schedule->command('user:fetch')->weekly()->weeklyOn(2, '10:00');
+        $schedule->command('user:fetch')->dailyAt('10:00');
+        //$schedule->command('user:fetch')->weekly()->weeklyOn(2, '10:00');
     }
 
 
