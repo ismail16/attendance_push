@@ -9,5 +9,5 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'api_key'];
+    protected $fillable = ['name', 'url', 'api_key'];
 }

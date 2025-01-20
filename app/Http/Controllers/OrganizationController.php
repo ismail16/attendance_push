@@ -9,15 +9,16 @@ class OrganizationController extends Controller
 {
     public function edit()
     {
-       $org = Organization::first();
+        $org = Organization::first();
 
-       return view('pages.organization.edit', compact('org'));
+        return view('pages.organization.edit', compact('org'));
     }
 
     public function update(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
+            'url' => 'required',
             'api_key' => 'required'
         ]);
 
