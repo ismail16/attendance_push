@@ -30,93 +30,42 @@ class AttendanceSend extends Command
      */
     public function handle(): void
     {
-        $remoteServerUrl = env('REMOTE_SERVER_URL');
-
-        // // Validate if the URL is properly formatted
-        // if (filter_var($remoteServerUrl, FILTER_VALIDATE_URL) === false) {
-        //     $this->error('Invalid REMOTE_SERVER_URL format.');
-        //     return;
-        // }
-        // Extract the host from the URL
-        // $urlParts = parse_url($remoteServerUrl);
-        // $host = $urlParts['host'];
-
-        // // Check if the host is reachable
-        // $hostIsReachable = $this->isHostReachable($host);
-
-        // if (!$hostIsReachable) {
-        //     $this->error("Could not resolve host: $host");
-        //     return;
-        // }
-
-        $devices = Device::all();
-        $org_api_key = Organization::first()->api_key;
+        $org_api = Organization::first();
         $final_attendances = [];
-        $errors = [];
+        $final_attendances = Attendance::where('status', 0)
+            ->select('id', 'deviceId', 'punchMode', 'punchTime', 'punchType', 'userId')
+            ->get()
+            ->toArray();
 
-        foreach ($devices as $device) {
-            if ($device->device_ip) {
-                $zk = new ZKTeco($device->device_ip, 4370);
-                if ($zk->connect()) {
-                    $zk->disableDevice();
-                    $attendances = $zk->getAttendance();
-                    // return $attendances;
+        $chunks = array_chunk($final_attendances, 100);
+        //return $chunks;
+        foreach ($chunks as $batch) {
+            $response = Http::post($org_api->url . '/api/device-attendance', [
+                'api_key' => $org_api->api_key,
+                'attendances' => $batch,
+            ]);
 
-                    foreach ($attendances as $attendance) {
-                        $formattedData = [
-                            "userId" => $attendance['id'],
-                            "punchTime" => $attendance['timestamp'],
-                            "punchType" => $attendance['type'],
-                            "deviceId" => $device->device_id,
-                            "punchMode" => "Finger"
-                        ];
+            if ($response->successful()) {
+                $responseData = $response->json(); // Get the response body as an array
 
-                        $final_attendances[] = $formattedData;
-                    }
+                // Check if the response contains a 'message' key and handle accordingly
+                if (isset($responseData['success']) && !empty($responseData['success'])) {
+                    $responses[] = $responseData; // Add the response to the array
+                    $attendanceIds = array_column($batch, 'id'); // Assuming 'id' is the identifier for attendance records
+                    Attendance::whereIn('id', $attendanceIds)->update(['status' => 1]);
                 } else {
-                    $errors[] = ['msg' => 'Device ' . $device->name . ' not connected. Set the correct IP.'];
-                    continue;
+                    $responses[] = [
+                        'error' => true,
+                        'message' => 'Successful response, but no success message found.',
+                    ];
                 }
             } else {
-                continue;
+                $responses[] = [
+                    'error' => true,
+                    'message' => 'Failed to push batch.',
+                    'details' => $response->json(),
+                ];
             }
         }
-        // return response()->json($final_attendances);
-        //sent final_attendances to another server
-        $response = Http::post($remoteServerUrl . '/api/device-attendance', [
-            'api_key' => 12345678,
-            'attendances' => $final_attendances
-        ]);
-
-        if ($response->ok()) {
-            $this->info('Attendance Storred Successfully!');
-        } else {
-            $this->info('Something went wrong!');
-        }
-
-        // $data_array = Attendance::where('status', 0)->get();
-        // $new_array = [];
-        // foreach ($data_array as $data)
-        // {
-        //     $this_data = [
-        //         "userId" => $data->user_id,
-        //         "punchTime" => $data->punch_time,
-        //         "punchType" => "Finger",
-        //         "deviceId" => $data->device_id,
-        //         "punchMode" => $data->punch_mode
-        //     ];
-        //     array_push($new_array, $this_data);
-        // }
-        // $response = Http::acceptJson()->post(env('REMOTE_SERVER_URL').'/api/user-device-data',$new_array);
-        // if($response->ok()){
-
-        //     foreach($data_array as $data){
-        //         Attendance::find($data->id)->update(['status' => 1]);
-        //     }
-        //     $this->info('Attendance Storred Successfully!');
-        // }
-        // else{
-        //     $this->info('Something went wrong!');
-        // }
     }
 }

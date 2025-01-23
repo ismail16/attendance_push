@@ -71,11 +71,11 @@
                 <div data-i18n="All Attendance">Today's Attendance</div>
             </a>
         </li> -->
-        <!-- <li class="menu-item {{ request()->routeIs('fingerprint.index') ? 'active' : '' }}">
-            <a href="{{ route('fingerprint.index') }}" class="menu-link">
-                <div data-i18n="Finger Print"> <i class=' menu-icon tf-icons bx bx-fingerprint'></i> Finger Print</div>
+        <li class="menu-item {{ request()->routeIs('organization.edit') ? 'active' : '' }}">
+            <a href="{{ route('organization.edit') }}" class="menu-link">
+                <div data-i18n="Organization"> <i class=' menu-icon tf-icons bx bxs-institution'></i> Organization</div>
             </a>
-        </li> -->
+        </li>
 
 
         <li class="menu-item {{ request()->routeIs('export.export_attendance') ? 'active' : '' }} {{ request()->routeIs('search.attendance') ? 'active' : '' }}">

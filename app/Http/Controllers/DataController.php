@@ -21,27 +21,10 @@ class DataController extends Controller
         return view('pages.data.index', compact('attendance'));
     }
 
-    public function device_attendance_push(Request $request)
+    public function device_attendance_pushed(Request $request)
     {
         $remoteServerUrl = env('REMOTE_SERVER_URL');
 
-        // // Validate if the URL is properly formatted
-        // if (filter_var($remoteServerUrl, FILTER_VALIDATE_URL) === false) {
-        //     $this->error('Invalid REMOTE_SERVER_URL format.');
-        //     return;
-        // }
-
-        // Extract the host from the URL
-        // $urlParts = parse_url($remoteServerUrl);
-        // $host = $urlParts['host'];
-
-        // // Check if the host is reachable
-        // $hostIsReachable = $this->isHostReachable($host);
-
-        // if (!$hostIsReachable) {
-        //     $this->error("Could not resolve host: $host");
-        //     return;
-        // }
 
         $devices = Device::all();
         $org_api_key = Organization::first()->api_key;
@@ -85,40 +68,90 @@ class DataController extends Controller
 
         ]);
         return $response->json();
+    }
 
-        // dd($response->json());
-        //Code for Live Server
-        // $last_att = Attendance::orderBy('punch_time', 'desc')->first();
-        // if (!$last_att) {
-        //     foreach ($final_attendances as $att) {
-        //         $attData = new Attendance;
+    public function device_attendance_push(Request $request)
+    {
+        $devices = Device::all();
+        $org_api = Organization::first();
+        $final_attendances = [];
+        $errors = [];
+        $responses = [];
+        $batchSize = 100; // Number of records per batch
 
-        //         $attData->api_key = $request->api_key;
-        //         $attData->user_id = $att['userId'];
-        //         $attData->punch_time = $att['punchTime'];
-        //         $attData->device_id = $att['deviceId'];
-        //         $attData->punch_mode = $att['punchType'];
-        //         $attData->save();
-        //         $message = "New  data Upload Successfully";
-        //     }
-        // } else {
-        //     foreach ($final_attendances as $att) {
-        //         if (strtotime($last_att->punch_time) < strtotime($att['punchTime'])) {
-        //             $attData = new Attendance;
-        //             $attData->api_key = $request->api_key;
-        //             $attData->user_id = $att['userId'];
-        //             $attData->punch_time = $att['punchTime'];
-        //             $attData->device_id = $att['deviceId'];
-        //             $attData->punch_mode = $att['punchType'];
-        //             $attData->save();
-        //             $message = "Update new data Successfully";
+        // foreach ($devices as $device) {
+        //     if ($device->device_ip) {
+        //         $zk = new ZKTeco($device->device_ip, 4370);
+
+        //         if ($zk->connect()) {
+        //             $zk->disableDevice();
+        //             $attendances = $zk->getAttendance();
+
+        //             foreach ($attendances as $attendance) {
+        //                 $formattedData = [
+        //                     "userId" => $attendance['id'],
+        //                     "punchTime" => $attendance['timestamp'],
+        //                     "punchType" => $attendance['type'],
+        //                     "deviceId" => $device->device_id,
+        //                     "punchMode" => "Finger"
+        //                 ];
+        //                 $final_attendances[] = $formattedData;
+        //             }
         //         } else {
-        //             $message = "Already Updated all Data";
+        //             $errors[] = ['msg' => 'Device ' . $device->name . ' not connected. Set the correct IP.'];
+        //             continue;
         //         }
+        //     } else {
+        //         continue;
         //     }
         // }
 
 
-        //return response()->json(['success' => $message]);
+        // return $final_attendances;
+        // Send data to remote server in batches
+        $final_attendances = Attendance::where('status', 0)
+            ->select('id', 'deviceId', 'punchMode', 'punchTime', 'punchType', 'userId')
+            ->get()
+            ->toArray();
+
+        // return $final_attendances;
+        // $chunks = array_chunk($final_attendances, 100);
+
+        $chunks = array_chunk($final_attendances, 100);
+        //return $chunks;
+        foreach ($chunks as $batch) {
+            $response = Http::post($org_api->url . '/api/device-attendance', [
+                'api_key' => $org_api->api_key,
+                'attendances' => $batch,
+            ]);
+
+            if ($response->successful()) {
+                $responseData = $response->json(); // Get the response body as an array
+
+                // Check if the response contains a 'message' key and handle accordingly
+                if (isset($responseData['success']) && !empty($responseData['success'])) {
+                    $responses[] = $responseData; // Add the response to the array
+                    $attendanceIds = array_column($batch, 'id'); // Assuming 'id' is the identifier for attendance records
+                    Attendance::whereIn('id', $attendanceIds)->update(['status' => 1]);
+                } else {
+                    $responses[] = [
+                        'error' => true,
+                        'message' => 'Successful response, but no success message found.',
+                    ];
+                }
+            } else {
+                $responses[] = [
+                    'error' => true,
+                    'message' => 'Failed to push batch.',
+                    'details' => $response->json(),
+                ];
+            }
+        }
+
+        return response()->json([
+            'message' => 'Data processed successfully.',
+            'responses' => $responses,
+            'errors' => $errors,
+        ]);
     }
 }

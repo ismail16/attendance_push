@@ -8,7 +8,7 @@ use App\Models\Organization;
 use Illuminate\Console\Command;
 use Rats\Zkteco\Lib\ZKTeco;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Log;
 
 class AttendanceStore extends Command
 {
@@ -39,58 +39,57 @@ class AttendanceStore extends Command
 
         foreach ($devices as $device) {
             if ($device->device_ip) {
-                $zk = new ZKTeco($device->device_ip, 4370);
+                try {
+                    $zk = new ZKTeco($device->device_ip, 4370);
 
-                if ($zk->connect()) {
-                    $zk->disableDevice();
-                    $attendances = $zk->getAttendance();
-                    // $zk->clearAttendance();
+                    if ($zk->connect()) {
+                        $zk->disableDevice();
 
-                    // foreach ($attendances as &$item) {
-                    //     $item['device_id'] = $device->device_id;
-                    //     $item['api_key'] = $org_api_key;
-                    // }
+                        $attendances = $zk->getAttendance();
 
-                    // foreach ($attendances as $att) {
-                    //     $final_attendances[] = $att;
-                    // }
+                        foreach ($attendances as $attendance) {
+                            try {
+                                // Convert punch time to a consistent format (optional, if needed)
+                                $formattedPunchTime = $attendance['timestamp']; // Assuming already in 'Y-m-d H:i:s'
 
-                    foreach ($attendances as $attendance) {
-                        $formattedData = [
-                            "userId" => $attendance['id'],
-                            "punchTime" => $attendance['timestamp'],
-                            "punchType" => $attendance['type'],
-                            "deviceId" => $device->device_id,
-                            "punchMode" => "Finger"
-                        ];
-                        $final_attendances[] = $formattedData;
+                                // Check if the record already exists
+                                $isDuplicate = Attendance::where('userId', $attendance['id'])
+                                    ->where('punchTime', $formattedPunchTime)
+                                    ->exists();
+
+                                if (!$isDuplicate) {
+                                    // Only store if no duplicate is found
+                                    Attendance::create([
+                                        'api_key' => $org_api_key,
+                                        'userId' => $attendance['id'],
+                                        'punchTime' => $formattedPunchTime,
+                                        "deviceId" => $device->device_id,
+                                        "device_ip" => $device->device_ip,
+                                        'punchType' => $attendance['type'],
+                                        "punchMode" => "Finger"
+                                    ]);
+                                }
+                            } catch (\Exception $e) {
+                                Log::error('Failed to create attendance record.', [
+                                    'userId' => $attendance['id'] ?? null,
+                                    'punchTime' => $formattedPunchTime ?? null,
+                                    'device_ip' => $device->device_ip,
+                                    'error' => $e->getMessage()
+                                ]);
+                            }
+                        }
+                    } else {
+                        Log::error("Failed to connect to device with IP: {$device->device_ip}");
                     }
-                } else {
-                    continue;
+                } catch (\Exception $e) {
+                    Log::error("Exception occurred while processing device.", [
+                        'device_ip' => $device->device_ip,
+                        'error' => $e->getMessage()
+                    ]);
                 }
             } else {
-                continue;
+                Log::warning("Device ID {$device->id} is missing an IP address.");
             }
         }
-
-        $response = Http::post($remoteServerUrl . '/api/device-attendance', [
-            'api_key' => 12345678,
-            'attendances' => $final_attendances
-
-        ]);
-
-
-
-        // foreach ($final_attendances as $attend) {
-        //     Attendance::create([
-
-        //         'api_key' => $attend['api_key'],
-        //         'user_id' => $attend['id'],
-        //         'punch_time' => $attend['timestamp'],
-        //         'device_id' => $attend['device_id'],
-        //         'punch_mode' => ($attend['type'] == 0 || $attend['type'] == 4) ? 'IN' : 'OUT'
-
-        //     ]);
-        // }
     }
 }

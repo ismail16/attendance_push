@@ -42,7 +42,7 @@ class DashboardController extends Controller
         }
         $user_count = count($all_users);
         $device_count = Device::count();
-        $todays_attendance = Attendance::whereDate('punch_time', today()->format('Y-m-d'))->count();
+        $todays_attendance = Attendance::whereDate('punchTime', today()->format('Y-m-d'))->count();
         $org_name = Organization::first()->name;
 
         return view('dashboard', compact('user_count', 'device_count', 'todays_attendance', 'org_name'));

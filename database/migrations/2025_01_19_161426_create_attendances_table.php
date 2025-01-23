@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('api_key')->nullable();
-            $table->string('user_id')->nullable();
-            $table->string('punch_time')->nullable();
-            $table->string('device_id')->nullable();
-            $table->string('punch_mode')->nullable();
-            $table->boolean('status')->default(false);
+            $table->foreignId('api_key')->nullable();
+            $table->foreignId('deviceId')->nullable();
+            $table->ipAddress('device_ip');
+            $table->string('userId');
+            $table->string('punchTime');
+            $table->string('punchType')->comment('0=in, 4=out');
+            $table->string('punchMode');
+            $table->boolean('status')->default(false)->comment('1=synced, 0=not_synced');
             $table->timestamps();
         });
     }

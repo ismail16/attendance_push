@@ -260,7 +260,7 @@ class DeviceController extends Controller
                 continue;
             }
         }
-
+        //dd($finalAttendances);
         // return $finalAttendances;
 
         return view('pages.attendance.export', compact('finalAttendances', 'errors'));

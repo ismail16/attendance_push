@@ -14,10 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
         $this->call(AdminSeeder::class);
         Organization::create([
             'name' => 'Demo Org',
+            'url' => 'example.com',
             'api_key' => 'aXZ8qp7UI8lJr7Z'
         ]);
     }

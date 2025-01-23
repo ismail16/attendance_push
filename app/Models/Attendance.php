@@ -9,5 +9,5 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['api_key','user_id', 'punch_time', 'device_id', 'punch_mode', 'status'];
+    protected $fillable = ['api_key', 'userId',  'deviceId', 'device_ip', 'punchTime', 'punchMode', 'punchType', 'status'];
 }
