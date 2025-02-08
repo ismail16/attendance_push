@@ -44,7 +44,18 @@ class AttendanceClear extends Command
                         $deviceAttendance = count($attendances);
                         $syncedAtt = Attendance::where('status', 1)->where('device_ip', $device->device_ip)->count();
                         if ($deviceAttendance == $syncedAtt) {
-                            Log::warning("both are equals");
+                            Log::warning("Device and database attendance count are equal, proceeding with deletion.");
+
+                            // Delete attendance records from the database
+                            // Attendance::where('status', 1)
+                            //     ->where('device_ip', $device->device_ip)
+                            //     ->delete();
+
+                            // Log::info("Deleted attendance records from the database for device IP: {$device->device_ip}");
+
+                            // Clear attendance logs from the device
+                            // $zk->clearAttendance();
+                            // Log::info("Cleared attendance logs from the device: {$device->device_ip}");
                         }
                     } else {
                         Log::error("Failed to connect to device with IP: {$device->device_ip}");
