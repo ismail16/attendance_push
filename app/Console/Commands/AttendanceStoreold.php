@@ -10,7 +10,7 @@ use Rats\Zkteco\Lib\ZKTeco;
 use Illuminate\Support\Facades\Http;
 
 
-class AttendanceStore extends Command
+class AttendanceStoreold extends Command
 {
     /**
      * The name and signature of the console command.
